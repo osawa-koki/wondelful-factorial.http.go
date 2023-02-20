@@ -22,7 +22,7 @@ func main() {
 
 	// 環境変数からエンドポイントの値を取得する
 	scheme := os.Getenv("SCHEME")
-	endpoint := os.Getenv("ENDPOINT")
+	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
 	engine:= gin.Default()
@@ -46,7 +46,7 @@ func main() {
 		}
 
     // HTTP GETリクエストを送信する
-    resp, err := http.Get(fmt.Sprintf("%s://%s:%s/%d", scheme, endpoint, port, num - 1))
+    resp, err := http.Get(fmt.Sprintf("%s://%s:%s/%d", scheme, host, port, num - 1))
     if err != nil {
       log.Fatal(err)
     }
