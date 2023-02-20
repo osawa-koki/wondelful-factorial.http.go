@@ -1,6 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"strconv"
+	"os"
+	"log"
+	"fmt"
 	"net/http"
 	"github.com/joho/godotenv"
 	"github.com/gin-gonic/gin"
@@ -18,6 +23,7 @@ func main() {
 	// 環境変数からエンドポイントの値を取得する
 	scheme := os.Getenv("SCHEME")
 	endpoint := os.Getenv("ENDPOINT")
+	port := os.Getenv("PORT")
 
 	engine:= gin.Default()
 
@@ -40,7 +46,7 @@ func main() {
 		}
 
     // HTTP GETリクエストを送信する
-    resp, err := http.Get(fmt.Sprintf("%s://%s/%d", scheme, endpoint, num))
+    resp, err := http.Get(fmt.Sprintf("%s://%s:%s/%d", scheme, endpoint, port, num - 1))
     if err != nil {
       log.Fatal(err)
     }
@@ -56,14 +62,11 @@ func main() {
     // "n"プロパティの値を整数として取得する
     n, ok := data["n"].(float64)
     if ok == false {
-      log.Fatal(`property "n" is not a number.`)
+      log.Fatal(`Property "n" is not a number.`)
     }
 
-    // nを整数として使用する
-    num := int(n)
-
 		// idを整数として使用する
-		c.JSON(http.StatusOK, gin.H{"n": n * num, "error": nil})
+		c.JSON(http.StatusOK, gin.H{"n": num * int(n), "error": nil})
 	})
-	engine.Run("0.0.0.0:8080")
+	engine.Run(fmt.Sprintf("0.0.0.0:%s", port))
 }
